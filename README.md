@@ -1,5 +1,5 @@
 # minio-spring-boot-starter
-基于minio官网封装的starter（简易版）
+基于minio官网api封装的starter（简易版）
 ## 使用方法：（1.0.0） 简易版本
 ### 1. 加载maven依赖
 ```pom

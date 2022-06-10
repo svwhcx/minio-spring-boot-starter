@@ -2,11 +2,10 @@ package com.study.minio.context;
 
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
-
 /**
  * @description
  * @Author cxk
@@ -20,25 +19,26 @@ public class BucketPolicyContext {
         // 提前加载好痛配置策略
         // 1. 加载任何用户可访问的custom策略
         String customPolicy = loadPolicy("bucket-policy/bucket-custom-policy.json");
-        policyJsonMap.put(BucketPolicyEnum.CUSTOM,customPolicy);
+        policyJsonMap.put(BucketPolicyEnum.CUSTOM, customPolicy);
     }
 
     /**
      * 加载指定json配置文件的json配置
+     *
      * @param path json文件的路径
      * @return
-     * @throws IOException
      */
-    private static String loadPolicy(String path){
-        ClassPathResource classPathResource = new ClassPathResource(path);
+    private static String loadPolicy(String path) {
         StringBuilder stringBuilder = new StringBuilder();
-        List<String> strings;
-        try {
-            strings = Files.readAllLines(classPathResource.getFile().toPath());
+        ClassPathResource classPathResource = new ClassPathResource(path);
+        try (BufferedReader bf = new BufferedReader(new InputStreamReader(classPathResource.getInputStream()))) {
+            String s;
+            while ((s = bf.readLine()) != null) {
+                stringBuilder.append(s);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        strings.forEach(stringBuilder::append);
         return stringBuilder.toString();
     }
 
@@ -46,7 +46,7 @@ public class BucketPolicyContext {
     /**
      * 策略枚举
      */
-    public enum BucketPolicyEnum{
+    public enum BucketPolicyEnum {
         CUSTOM
     }
 
